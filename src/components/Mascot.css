@@ -1,0 +1,113 @@
+.mascot {
+  --blink-duration: 100ms;
+  --blink-gap: 3.2s;
+  --glance-delay: 0.5s;
+  --squish-delay: 0.4s;
+  --tilt: 5deg;
+  --squish-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.mascot__squish {
+  transform-origin: 50% 86%;
+  animation: mascot-squish 3.8s var(--squish-ease) var(--squish-delay) infinite;
+}
+
+.mascot__face {
+  transform-box: fill-box;
+  transform-origin: 60px 58px;
+}
+
+.mascot__eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mascot-blink var(--blink-gap) ease-in-out infinite;
+}
+
+.mascot__eye--right {
+  animation-delay: 40ms;
+}
+
+.mascot__pupil {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: mascot-glance 5.6s ease-in-out var(--glance-delay) infinite;
+}
+
+.mascot--thinking .mascot__squish {
+  animation-duration: 1.6s;
+}
+
+.mascot--thinking .mascot__eye {
+  animation-duration: 1.5s;
+}
+
+.mascot--speaking .mascot__squish {
+  animation-name: mascot-talk;
+  animation-duration: 0.9s;
+}
+
+@keyframes mascot-blink {
+  0%,
+  86%,
+  100% {
+    transform: scaleY(1);
+  }
+  90%,
+  93% {
+    transform: scaleY(0.08);
+  }
+}
+
+@keyframes mascot-glance {
+  0%,
+  18%,
+  100% {
+    transform: translateX(0);
+  }
+  28%,
+  42% {
+    transform: translateX(10%);
+  }
+  58%,
+  70% {
+    transform: translateX(-8%);
+  }
+}
+
+@keyframes mascot-squish {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0deg) scale(1, 1);
+  }
+  78% {
+    transform: rotate(var(--tilt)) scale(1.03, 0.96);
+  }
+  86% {
+    transform: rotate(calc(var(--tilt) * -0.6)) scale(0.98, 1.03);
+  }
+}
+
+@keyframes mascot-talk {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1, 1);
+  }
+  40% {
+    transform: rotate(-3deg) scale(1.04, 0.94);
+  }
+  70% {
+    transform: rotate(2deg) scale(0.98, 1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot__squish,
+  .mascot__eye,
+  .mascot__pupil {
+    animation: none;
+  }
+}
