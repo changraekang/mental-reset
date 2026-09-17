@@ -1,5 +1,5 @@
 import type { CardPayload } from "./types";
-import { kakaoJsKey } from "./config";
+import { kakaoJsKey, siteUrl } from "./config";
 
 type KakaoSharePayload = {
   objectType: "feed";
@@ -70,27 +70,28 @@ async function sendKakaoFeed(payload: KakaoSharePayload) {
   return !blocked;
 }
 
+function kakaoLink(url: string) {
+  return {
+    mobileWebUrl: url,
+    webUrl: url,
+  };
+}
+
 export async function shareKakao(card: CardPayload) {
   const text = cardShareText(card);
-  const url = window.location.origin;
+  const url = siteUrl();
   const payload: KakaoSharePayload = {
     objectType: "feed",
     content: {
       title: card.headline ? `${card.headline} · 멘탈 리셋` : "멘탈 리셋",
       description: text.slice(0, 200),
       imageUrl: `${url}/favicon.png`,
-      link: {
-        mobileWebUrl: url,
-        webUrl: url,
-      },
+      link: kakaoLink(url),
     },
     buttons: [
       {
         title: "나도 멘탈 리셋",
-        link: {
-          mobileWebUrl: url,
-          webUrl: url,
-        },
+        link: kakaoLink(url),
       },
     ],
   };

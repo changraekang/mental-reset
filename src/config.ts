@@ -1,4 +1,5 @@
 const PROD_API = "https://api.sparkling-rae.com";
+const PROD_SITE = "https://mental-reset.sparkling-rae.com";
 const PROD_NAVER_CLIENT_ID = "p96Rvd0TGKL2i0VfH81s";
 const PROD_KAKAO_JS_KEY = "4056626004790c74276d8fbe866ad653";
 export const NAVER_CALLBACK_PATH = "/Oauth/login";
@@ -37,4 +38,13 @@ export function naverCallbackUrl() {
 
 export function kakaoJsKey() {
   return env("VITE_KAKAO_JS_KEY") || PROD_KAKAO_JS_KEY;
+}
+
+export function siteUrl() {
+  const configured = env("VITE_SITE_URL");
+  if (configured) return configured.replace(/\/$/, "");
+  const origin = typeof window === "undefined" ? "" : window.location.origin;
+  if (origin.includes("localhost")) return PROD_SITE;
+  if (origin.includes("sparkling-rae.com")) return origin.replace(/\/$/, "");
+  return PROD_SITE;
 }
