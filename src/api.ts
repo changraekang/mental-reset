@@ -1,10 +1,10 @@
 import { authHeaders } from "./auth";
 import type { CardPayload, Persona, ReframeResponse, SavedCard } from "./types";
 
-const API_BASE = (import.meta.env.VITE_API_BASE || "http://localhost:4000").replace(
-  /\/$/,
-  "",
-);
+const API_BASE = (
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.DEV ? "http://localhost:4000" : "https://api.sparkling-rae.com")
+).replace(/\/$/, "");
 
 function apiUrl(path: string) {
   return `${API_BASE}${path.startsWith("/") ? path : `/${path}`}`;
