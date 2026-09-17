@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { isNaverCallbackPath } from "../auth";
-
-const NAVER_CLIENT_ID = import.meta.env.VITE_APP_NAVER_CLIENT_ID;
-const NAVER_CALLBACK_LOGIN_URL = import.meta.env.VITE_APP_NAVER_CALLBACK_LOGIN_URL;
+import { naverCallbackUrl, naverClientId } from "../config";
 
 type Props = {
   label?: string;
@@ -11,8 +9,9 @@ type Props = {
 export function NaverLoginButton({ label = "네이버로 로그인" }: Props) {
   useEffect(() => {
     if (isNaverCallbackPath()) return;
-    if (!NAVER_CLIENT_ID || typeof window.naver_id_login === "undefined") return;
-    const naver = new window.naver_id_login(NAVER_CLIENT_ID, NAVER_CALLBACK_LOGIN_URL);
+    const clientId = naverClientId();
+    if (!clientId || typeof window.naver_id_login === "undefined") return;
+    const naver = new window.naver_id_login(clientId, naverCallbackUrl());
     const state = naver.getUniqState();
     naver.setState(state);
     naver.init_naver_id_login();

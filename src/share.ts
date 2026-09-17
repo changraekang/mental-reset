@@ -1,4 +1,5 @@
 import type { CardPayload } from "./types";
+import { kakaoJsKey } from "./config";
 
 type KakaoSharePayload = {
   objectType: "feed";
@@ -27,7 +28,7 @@ function getKakao(): KakaoSDK | null {
 
 function ensureKakao(): KakaoSDK | null {
   const Kakao = getKakao();
-  const key = import.meta.env.VITE_KAKAO_JS_KEY;
+  const key = kakaoJsKey();
   if (!Kakao || !key) return null;
   if (!Kakao.isInitialized()) Kakao.init(key);
   return Kakao;
@@ -40,16 +41,44 @@ function cardShareText(card: CardPayload) {
     .join("\n");
 }
 
+function isKakaoCallbackAlert(message: unknown) {
+  const text = String(message ?? "");
+  return /Callback URL|Redirect URI|콜백/i.test(text);
+}
+
+async function sendKakaoFeed(payload: KakaoSharePayload) {
+  const Kakao = ensureKakao();
+  if (!Kakao?.Share?.sendDefault && !Kakao?.Link?.sendDefault) return false;
+
+  let blocked = false;
+  const originalAlert = window.alert;
+  window.alert = (message) => {
+    if (isKakaoCallbackAlert(message)) {
+      blocked = true;
+      return;
+    }
+    originalAlert.call(window, message);
+  };
+  try {
+    if (Kakao.Share?.sendDefault) Kakao.Share.sendDefault(payload);
+    else Kakao.Link?.sendDefault(payload);
+  } catch {
+    blocked = true;
+  }
+  await new Promise((resolve) => window.setTimeout(resolve, 600));
+  window.alert = originalAlert;
+  return !blocked;
+}
+
 export async function shareKakao(card: CardPayload) {
   const text = cardShareText(card);
   const url = window.location.origin;
-  const Kakao = ensureKakao();
   const payload: KakaoSharePayload = {
     objectType: "feed",
     content: {
-      title: card.headline ? `#${card.headline.replace(/^#/, "")} · 멘탈 리셋` : "멘탈 리셋",
+      title: card.headline ? `${card.headline} · 멘탈 리셋` : "멘탈 리셋",
       description: text.slice(0, 200),
-      imageUrl: `${url}/kakao-share.png`,
+      imageUrl: `${url}/favicon.png`,
       link: {
         mobileWebUrl: url,
         webUrl: url,
@@ -66,24 +95,13 @@ export async function shareKakao(card: CardPayload) {
     ],
   };
 
-  try {
-    if (Kakao?.Share?.sendDefault) {
-      Kakao.Share.sendDefault(payload);
-      return "kakao";
-    }
-    if (Kakao?.Link?.sendDefault) {
-      Kakao.Link.sendDefault(payload);
-      return "kakao";
-    }
-  } catch {
-    /* SDK가 막히면 아래 폴백으로 이어간다 */
-  }
+  if (await sendKakaoFeed(payload)) return "kakao";
 
   const share = navigator.share?.bind(navigator);
   if (share) {
     await share({ title: "멘탈 리셋", text, url });
     return "shared";
   }
-  await navigator.clipboard.writeText(text);
+  await navigator.clipboard.writeText(`${text}\n${url}`);
   return "copied";
 }

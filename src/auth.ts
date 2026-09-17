@@ -1,3 +1,5 @@
+import { NAVER_CALLBACK_PATH, naverCallbackUrl } from "./config";
+
 const TOKEN_KEY = "mental-reset.token";
 const NAME_KEY = "mental-reset.name";
 
@@ -26,16 +28,18 @@ export function authHeaders(): HeadersInit {
 
 export function isNaverCallbackPath() {
   const current = window.location.pathname.replace(/\/+$/, "").toLowerCase();
-  const configured = import.meta.env.VITE_APP_NAVER_CALLBACK_LOGIN_URL;
-  if (configured) {
-    try {
-      const path = new URL(configured, window.location.origin).pathname
-        .replace(/\/+$/, "")
-        .toLowerCase();
-      if (path && current === path) return true;
-    } catch {
-      /* 잘못된 URL이면 아래 기본 경로만 본다 */
-    }
+  try {
+    const configured = new URL(naverCallbackUrl(), window.location.origin).pathname
+      .replace(/\/+$/, "")
+      .toLowerCase();
+    if (current === configured) return true;
+  } catch {
+    /* 아래 기본 경로만 본다 */
   }
-  return current === "/oauth/login" || current === "/oauthlogin" || current === "/oauth";
+  return (
+    current === NAVER_CALLBACK_PATH.toLowerCase() ||
+    current === "/oauth/login" ||
+    current === "/oauthlogin" ||
+    current === "/oauth"
+  );
 }
