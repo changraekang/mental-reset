@@ -70,12 +70,6 @@ async function sendKakaoFeed(payload: KakaoSharePayload) {
   return !blocked;
 }
 
-function kakaoLink(url: string) {
-  return {
-    mobileWebUrl: url,
-    webUrl: url,
-  };
-}
 
 export async function shareKakao(card: CardPayload) {
   const text = cardShareText(card);
@@ -83,15 +77,15 @@ export async function shareKakao(card: CardPayload) {
   const payload: KakaoSharePayload = {
     objectType: "feed",
     content: {
-      title: card.headline ? `${card.headline} · 멘탈 리셋` : "멘탈 리셋",
-      description: text.slice(0, 200),
+      title: card.headline ? `${card.headline}` : "멘탈 리셋",
+      description: card.reframe.slice(0, 200),
       imageUrl: `${url}/favicon.png`,
-      link: kakaoLink(url),
+      link: { mobileWebUrl: 'https://mental-reset.sparkling-rae.com', webUrl: 'https://mental-reset.sparkling-rae.com' },
     },
     buttons: [
       {
         title: "나도 멘탈 리셋",
-        link: kakaoLink(url),
+        link  : { mobileWebUrl: 'https://mental-reset.sparkling-rae.com', webUrl: 'https://mental-reset.sparkling-rae.com' },
       },
     ],
   };
