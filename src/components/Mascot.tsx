@@ -54,6 +54,7 @@ export function Mascot({
             <rect x="16" y="18" width="88" height="88" rx="22" fill={color} />
           )}
           {shape === "blob" && <path d={BLOB} fill={color} />}
+          <ellipse cx="44" cy="40" rx="16" ry="9" fill="#FFFFFF" opacity="0.22" />
           <g className="mascot__face">
             <g className="mascot__eye mascot__eye--left">
               <ellipse cx="44" cy="58" rx="11" ry="14" fill="#FFFFFF" />

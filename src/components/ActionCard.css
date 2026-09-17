@@ -3,7 +3,7 @@
   --card-paper: var(--white);
   position: relative;
   overflow: hidden;
-  padding: 20px 18px 16px;
+  padding: 24px 22px 22px;
   border-radius: var(--radius-card);
   background: var(--card-paper);
   border: 1px solid var(--gray-200);
@@ -22,15 +22,22 @@
 
 .action-card__top {
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 10px;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
 }
 
 .action-card__persona {
   margin: 0;
   font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-500);
+}
+
+.action-card__prompt {
+  margin: 6px 0 0;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gray-500);
 }
@@ -43,8 +50,14 @@
   letter-spacing: -0.03em;
 }
 
-.action-card__badge {
-  align-self: start;
+.action-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.action-card__tags span {
   padding: 4px 8px;
   border-radius: 8px;
   background: var(--blue-50);
@@ -54,18 +67,19 @@
 }
 
 .action-card__reframe {
-  margin: 0 0 12px;
+  margin: 0 0 16px;
   font-size: 16px;
-  line-height: 1.55;
+  line-height: 1.65;
   color: var(--gray-800);
 }
 
 .action-card__action {
   margin: 0;
-  padding-top: 12px;
+  padding-top: 16px;
   border-top: 1px solid var(--gray-200);
   font-size: 15px;
   font-weight: 600;
+  line-height: 1.5;
   color: var(--gray-900);
 }
 
@@ -75,7 +89,7 @@
 }
 
 .action-card--compact {
-  padding: 16px 16px 14px;
+  padding: 20px 20px 18px;
 }
 
 .action-card--compact h3 {

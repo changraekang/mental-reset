@@ -5,33 +5,34 @@ import "./screens.css";
 
 type Props = {
   personas: Persona[];
+  error?: string | null;
   onStart: () => void;
-  onCollection: () => void;
+  onPlaza: () => void;
 };
 
-export function SplashScreen({ personas, onStart, onCollection }: Props) {
+export function SplashScreen({ personas, error, onStart, onPlaza }: Props) {
   return (
     <section className="splash">
       <div className="splash__stage" aria-hidden="true">
         <div className="orbit">
           <div className="orbit__track">
-          {personas.map((persona, index) => (
-            <div
-              key={persona.id}
-              className="orbit__slot"
-              style={{ "--slot": `${index * 120}deg` } as CSSProperties}
-            >
-              <div className="orbit__counter">
-                <Mascot
-                  color={persona.color}
-                  shape={persona.shape}
-                  size={88}
-                  phase={0.2 + index * 0.37}
-                  label={persona.name}
-                />
+            {personas.map((persona, index) => (
+              <div
+                key={persona.id}
+                className="orbit__slot"
+                style={{ "--slot": `${index * 120}deg` } as CSSProperties}
+              >
+                <div className="orbit__counter">
+                  <Mascot
+                    color={persona.color}
+                    shape={persona.shape}
+                    size={88}
+                    phase={0.2 + index * 0.37}
+                    label={persona.name}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
           </div>
         </div>
       </div>
@@ -41,9 +42,9 @@ export function SplashScreen({ personas, onStart, onCollection }: Props) {
         <h1>멘탈 리셋</h1>
         <p className="lede">
           날것의 감정을 버리고,
-          <br />
-          한 문장으로 다시 잡아요.
+          <br />한 장으로 다시 잡아요.
         </p>
+        {error ? <p className="error">{error}</p> : null}
       </div>
 
       <div className="bottom-cta">
@@ -51,8 +52,8 @@ export function SplashScreen({ personas, onStart, onCollection }: Props) {
           <button className="btn btn--primary" onClick={onStart}>
             감정 버리기
           </button>
-          <button className="btn btn--weak" onClick={onCollection}>
-            카드 컬렉션
+          <button className="btn btn--weak" onClick={onPlaza}>
+            익명 광장
           </button>
         </div>
       </div>

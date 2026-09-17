@@ -1,9 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import { useState } from "react";
 import type { MascotExpression, Persona } from "../types";
 import { Mascot } from "../components/Mascot";
 import "./screens.css";
-
-type SpeechCtor = new () => SpeechRecognition;
 
 type Props = {
   personas: Persona[];
@@ -15,13 +13,7 @@ type Props = {
   error: string | null;
 };
 
-function getSpeechRecognition(): SpeechCtor | null {
-  const w = window as Window & {
-    SpeechRecognition?: SpeechCtor;
-    webkitSpeechRecognition?: SpeechCtor;
-  };
-  return w.SpeechRecognition || w.webkitSpeechRecognition || null;
-}
+const PHASE = [0.2, 0.95, 1.7];
 
 export function DumpScreen({
   personas,
@@ -33,39 +25,12 @@ export function DumpScreen({
   error,
 }: Props) {
   const [text, setText] = useState("");
-  const [listening, setListening] = useState(false);
-  const recRef = useRef<SpeechRecognition | null>(null);
   const selected = personas.find((p) => p.id === selectedId) || personas[0];
-  const speechOk = useMemo(() => Boolean(getSpeechRecognition()), []);
-  const expression: MascotExpression = busy
-    ? "thinking"
-    : listening
-      ? "speaking"
-      : "idle";
-
-  function toggleVoice() {
-    const Ctor = getSpeechRecognition();
-    if (!Ctor) return;
-    if (listening && recRef.current) {
-      recRef.current.stop();
-      return;
-    }
-    const rec = new Ctor();
-    rec.lang = "ko-KR";
-    rec.interimResults = true;
-    rec.continuous = false;
-    rec.onresult = (event: SpeechRecognitionEvent) => {
-      const chunk = Array.from(event.results)
-        .map((r) => r[0]?.transcript || "")
-        .join(" ");
-      setText((prev) => (prev ? `${prev.trim()} ${chunk}` : chunk).trim());
-    };
-    rec.onend = () => setListening(false);
-    rec.onerror = () => setListening(false);
-    recRef.current = rec;
-    setListening(true);
-    rec.start();
-  }
+  const expression: MascotExpression = busy ? "thinking" : "idle";
+  const selectedIndex = Math.max(
+    0,
+    personas.findIndex((p) => p.id === selectedId),
+  );
 
   return (
     <section className="dump">
@@ -82,18 +47,18 @@ export function DumpScreen({
           <Mascot
             color={selected.color}
             shape={selected.shape}
-            size={72}
+            size={96}
             expression={expression}
-            phase={0.55}
+            phase={PHASE[selectedIndex] ?? 0.55}
             label={selected.name}
           />
         ) : null}
       </div>
       <h2>여기에 버려요</h2>
-      <p className="lede lede--small">검열하지 말고 적거나 말해 주세요. 카드에 원문은 남지 않아요.</p>
+      <p className="lede lede--small">로그인 없이 바로 적을 수 있어요. 원문은 카드에 남지 않아요.</p>
 
-      <div className="persona-row" role="listbox" aria-label="페르소나">
-        {personas.map((persona) => (
+      <div className="persona-row" role="listbox" aria-label="캐릭터">
+        {personas.map((persona, index) => (
           <button
             key={persona.id}
             type="button"
@@ -105,8 +70,9 @@ export function DumpScreen({
             <Mascot
               color={persona.color}
               shape={persona.shape}
-              size={36}
-              phase={persona.id === "ally" ? 0.8 : 0.15}
+              size={48}
+              phase={PHASE[index] ?? index * 0.7}
+              label={persona.name}
             />
             <span>
               <strong>{persona.name}</strong>
@@ -131,24 +97,14 @@ export function DumpScreen({
       {error ? <p className="error">{error}</p> : null}
 
       <div className="bottom-cta">
-        <div className="bottom-cta__stack">
-          <button
-            type="button"
-            className={`btn btn--ghost ${listening ? "is-live" : ""}`}
-            onClick={toggleVoice}
-            disabled={!speechOk || busy}
-          >
-            {listening ? "듣는 중" : speechOk ? "음성으로 털기" : "음성 미지원"}
-          </button>
-          <button
-            type="button"
-            className="btn btn--primary"
-            disabled={busy || text.trim().length < 2}
-            onClick={() => onSubmit(text.trim())}
-          >
-            {busy ? "다시 잡는 중…" : "액션 카드로"}
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn btn--primary"
+          disabled={busy || text.trim().length < 2}
+          onClick={() => onSubmit(text.trim())}
+        >
+          {busy ? "다시 잡는 중…" : "카드로 다시 잡기"}
+        </button>
       </div>
     </section>
   );

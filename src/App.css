@@ -4,7 +4,7 @@
   min-height: 100vh;
   max-width: 430px;
   margin: 0 auto;
-  overflow: hidden;
+  overflow-x: hidden;
   background: var(--white);
   box-shadow: 0 0 0 1px var(--gray-200);
 }

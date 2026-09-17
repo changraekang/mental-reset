@@ -1,18 +1,7 @@
-import type { CSSProperties } from "react";
+import { forwardRef, type CSSProperties } from "react";
 import type { CardPayload, Persona } from "../types";
 import { Mascot } from "./Mascot";
 import "./ActionCard.css";
-
-const SENTIMENT: Record<string, string> = {
-  anger: "분노",
-  anxiety: "불안",
-  sadness: "슬픔",
-  shame: "수치",
-  burnout: "번아웃",
-  confusion: "혼란",
-  relief: "안도",
-  mixed: "복합",
-};
 
 type Props = {
   card: CardPayload;
@@ -20,12 +9,16 @@ type Props = {
   compact?: boolean;
 };
 
-export function ActionCard({ card, persona, compact = false }: Props) {
+export const ActionCard = forwardRef<HTMLElement, Props>(function ActionCard(
+  { card, persona, compact = false },
+  ref,
+) {
   const color = persona?.color || "#3182F6";
   const paper = persona?.paper || "#FFFFFF";
 
   return (
     <article
+      ref={ref}
       className={`action-card ${compact ? "action-card--compact" : ""}`}
       style={{ "--card-ink": color, "--card-paper": paper } as CSSProperties}
     >
@@ -41,14 +34,19 @@ export function ActionCard({ card, persona, compact = false }: Props) {
         ) : null}
         <div>
           <p className="action-card__persona">{persona?.name || card.personaId}</p>
+          <p className="action-card__prompt">이런 질문</p>
           <h3>{card.headline}</h3>
         </div>
-        <span className="action-card__badge">
-          {SENTIMENT[card.sentimentLabel] || card.sentimentLabel}
-        </span>
       </header>
+      {card.tags?.length ? (
+        <p className="action-card__tags">
+          {card.tags.map((tag) => (
+            <span key={tag}>{tag.startsWith("#") ? tag : `#${tag}`}</span>
+          ))}
+        </p>
+      ) : null}
       <p className="action-card__reframe">{card.reframe}</p>
       <p className="action-card__action">{card.action}</p>
     </article>
   );
-}
+});
