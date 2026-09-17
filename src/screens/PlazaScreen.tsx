@@ -7,9 +7,10 @@ type Props = {
   personas: Persona[];
   onBack: () => void;
   onDump: () => void;
+  onCollection: () => void;
 };
 
-export function PlazaScreen({ cards, personas, onBack, onDump }: Props) {
+export function PlazaScreen({ cards, personas, onBack, onDump, onCollection }: Props) {
   return (
     <section className="collection">
       <header className="top">
@@ -38,9 +39,14 @@ export function PlazaScreen({ cards, personas, onBack, onDump }: Props) {
       )}
 
       <div className="bottom-cta">
-        <button className="btn btn--primary" onClick={onDump}>
-          나도 버리기
-        </button>
+        <div className="bottom-cta__stack">
+          <button className="btn btn--primary" onClick={onDump}>
+            나도 버리기
+          </button>
+          <button className="btn btn--weak" onClick={onCollection}>
+            카드 보관함
+          </button>
+        </div>
       </div>
     </section>
   );

@@ -9,6 +9,7 @@ type Props = {
   onSelect: (id: string) => void;
   onSubmit: (text: string) => void;
   onBack: () => void;
+  onCollection: () => void;
   busy: boolean;
   error: string | null;
 };
@@ -21,6 +22,7 @@ export function DumpScreen({
   onSelect,
   onSubmit,
   onBack,
+  onCollection,
   busy,
   error,
 }: Props) {
@@ -97,14 +99,19 @@ export function DumpScreen({
       {error ? <p className="error">{error}</p> : null}
 
       <div className="bottom-cta">
-        <button
-          type="button"
-          className="btn btn--primary"
-          disabled={busy || text.trim().length < 2}
-          onClick={() => onSubmit(text.trim())}
-        >
-          {busy ? "다시 잡는 중…" : "카드로 다시 잡기"}
-        </button>
+        <div className="bottom-cta__stack">
+          <button
+            type="button"
+            className="btn btn--primary"
+            disabled={busy || text.trim().length < 2}
+            onClick={() => onSubmit(text.trim())}
+          >
+            {busy ? "다시 잡는 중…" : "카드로 다시 잡기"}
+          </button>
+          <button type="button" className="btn btn--weak" onClick={onCollection} disabled={busy}>
+            카드 보관함
+          </button>
+        </div>
       </div>
     </section>
   );

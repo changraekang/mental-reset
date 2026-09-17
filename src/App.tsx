@@ -264,6 +264,7 @@ export default function App() {
           onSelect={setPersonaId}
           onSubmit={submitDump}
           onBack={() => setView("splash")}
+          onCollection={openCollection}
           busy={busy}
           error={error}
         />
@@ -317,6 +318,7 @@ export default function App() {
             setError(null);
             setView("dump");
           }}
+          onCollection={openCollection}
         />
       )}
     </div>

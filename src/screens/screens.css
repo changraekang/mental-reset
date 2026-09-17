@@ -8,8 +8,9 @@
   padding: 0 20px 132px;
 }
 
-.dump {
-  padding-bottom: 132px;
+.dump,
+.collection {
+  padding-bottom: 180px;
 }
 
 .reveal {
