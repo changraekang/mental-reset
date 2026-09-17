@@ -11,7 +11,7 @@ import {
   reframeDump,
   saveCard,
 } from "./api";
-import { clearAuth, getAuthName, getToken, isNaverCallbackPath, setAuth } from "./auth";
+import { clearAuth, getToken, isNaverCallbackPath, setAuth } from "./auth";
 import {
   clearLocalCards,
   deleteLocalCard,
@@ -77,7 +77,6 @@ export default function App() {
   const [cards, setCards] = useState<SavedCard[]>([]);
   const [plaza, setPlaza] = useState<SavedCard[]>([]);
   const [token, setToken] = useState<string | null>(getToken());
-  const [authName, setAuthName] = useState<string | null>(getAuthName());
   const [oauthBusy, setOauthBusy] = useState(() => isNaverCallbackPath());
   const loggedIn = Boolean(token);
 
@@ -106,7 +105,6 @@ export default function App() {
     async function finishLogin(nextToken: string, name: string) {
       setAuth(nextToken, name);
       setToken(nextToken);
-      setAuthName(name);
       const local = listLocalCards();
       if (local.length) {
         try {
@@ -297,7 +295,6 @@ export default function App() {
           onLogout={() => {
             clearAuth();
             setToken(null);
-            setAuthName(null);
             setCards(listLocalCards());
           }}
           onDelete={async (id) => {
