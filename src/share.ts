@@ -74,18 +74,25 @@ async function sendKakaoFeed(payload: KakaoSharePayload) {
 export async function shareKakao(card: CardPayload) {
   const text = cardShareText(card);
   const url = siteUrl();
+  const resultUrl = "https://mental-reset.sparkling-rae.com";
   const payload: KakaoSharePayload = {
     objectType: "feed",
     content: {
       title: card.headline ? `${card.headline}` : "멘탈 리셋",
       description: card.reframe.slice(0, 200),
       imageUrl: `${url}/favicon.png`,
-      link: { mobileWebUrl: 'https://mental-reset.sparkling-rae.com', webUrl: 'https://mental-reset.sparkling-rae.com' },
+      link: {
+        mobileWebUrl: resultUrl,
+        webUrl: resultUrl,
+      },
     },
     buttons: [
       {
         title: "나도 멘탈 리셋",
-        link  : { mobileWebUrl: 'https://mental-reset.sparkling-rae.com', webUrl: 'https://mental-reset.sparkling-rae.com' },
+        link: {
+          mobileWebUrl: resultUrl,
+          webUrl: resultUrl,
+        },
       },
     ],
   };
